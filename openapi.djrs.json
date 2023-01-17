@@ -1,0 +1,161 @@
+{
+    "openapi": "3.0.2",
+    "info": {
+      "title": "FastAPI",
+      "version": "0.1.0"
+    },
+    "paths": {
+      "/reflection/": {
+        "post": {
+          "summary": "Get Table Schema",
+          "operationId": "get_table_schema_reflection__post",
+          "requestBody": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReflectionRequest"
+                }
+              }
+            },
+            "required": true
+          },
+          "responses": {
+            "200": {
+              "description": "Successful Response",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/TableSchema"
+                  }
+                }
+              }
+            },
+            "422": {
+              "description": "Validation Error",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/HTTPValidationError"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "components": {
+      "schemas": {
+        "Column": {
+          "title": "Column",
+          "required": [
+            "name",
+            "type"
+          ],
+          "type": "object",
+          "properties": {
+            "name": {
+              "title": "Name",
+              "type": "string"
+            },
+            "type": {
+              "$ref": "#/components/schemas/ColumnType"
+            }
+          }
+        },
+        "ColumnType": {
+          "title": "ColumnType",
+          "enum": [
+            "BYTES",
+            "STR",
+            "FLOAT",
+            "INT",
+            "DECIMAL",
+            "BOOL",
+            "DATETIME",
+            "DATE",
+            "TIME",
+            "TIMEDELTA",
+            "LIST",
+            "DICT"
+          ],
+          "type": "string",
+          "description": "An enumeration."
+        },
+        "HTTPValidationError": {
+          "title": "HTTPValidationError",
+          "type": "object",
+          "properties": {
+            "detail": {
+              "title": "Detail",
+              "type": "array",
+              "items": {
+                "$ref": "#/components/schemas/ValidationError"
+              }
+            }
+          }
+        },
+        "ReflectionRequest": {
+          "title": "ReflectionRequest",
+          "required": [
+            "engine",
+            "catalog",
+            "schema_",
+            "table"
+          ],
+          "type": "object",
+          "properties": {
+            "engine": {
+              "title": "Engine",
+              "type": "string"
+            },
+            "catalog": {
+              "title": "Catalog",
+              "type": "string"
+            },
+            "schema_": {
+              "title": "Schema ",
+              "type": "string"
+            },
+            "table": {
+              "title": "Table",
+              "type": "string"
+            }
+          }
+        },
+        "TableSchema": {
+          "title": "TableSchema",
+          "type": "array",
+          "items": {
+            "$ref": "#/components/schemas/Column"
+          }
+        },
+        "ValidationError": {
+          "title": "ValidationError",
+          "required": [
+            "loc",
+            "msg",
+            "type"
+          ],
+          "type": "object",
+          "properties": {
+            "loc": {
+              "title": "Location",
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "msg": {
+              "title": "Message",
+              "type": "string"
+            },
+            "type": {
+              "title": "Error Type",
+              "type": "string"
+            }
+          }
+        }
+      }
+    }
+  }

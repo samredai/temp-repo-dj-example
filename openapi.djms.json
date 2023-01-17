@@ -1,0 +1,195 @@
+{
+    "openapi": "3.0.2",
+    "info": {
+      "title": "FastAPI",
+      "version": "0.1.0"
+    },
+    "paths": {
+      "/materializations/": {
+        "post": {
+          "summary": "Get Materializations",
+          "operationId": "get_materializations_materializations__post",
+          "requestBody": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MaterializationRequest"
+                }
+              }
+            },
+            "required": true
+          },
+          "responses": {
+            "200": {
+              "description": "Successful Response",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "title": "Response Get Materializations Materializations  Post",
+                    "type": "object",
+                    "additionalProperties": {
+                      "type": "object",
+                      "additionalProperties": {
+                        "$ref": "#/components/schemas/MaterializationHistory"
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "422": {
+              "description": "Validation Error",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/HTTPValidationError"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "components": {
+      "schemas": {
+        "HTTPValidationError": {
+          "title": "HTTPValidationError",
+          "type": "object",
+          "properties": {
+            "detail": {
+              "title": "Detail",
+              "type": "array",
+              "items": {
+                "$ref": "#/components/schemas/ValidationError"
+              }
+            }
+          }
+        },
+        "MaterializationHistory": {
+          "title": "MaterializationHistory",
+          "required": [
+            "latest",
+            "schedule",
+            "tables"
+          ],
+          "type": "object",
+          "properties": {
+            "latest": {
+              "title": "Latest",
+              "type": "string"
+            },
+            "schedule": {
+              "title": "Schedule",
+              "type": "string"
+            },
+            "tables": {
+              "title": "Tables",
+              "type": "array",
+              "items": {
+                "$ref": "#/components/schemas/MaterializedTables"
+              }
+            }
+          }
+        },
+        "MaterializationRequest": {
+          "title": "MaterializationRequest",
+          "required": [
+            "nodes"
+          ],
+          "type": "object",
+          "properties": {
+            "nodes": {
+              "title": "Nodes",
+              "type": "array",
+              "items": {
+                "$ref": "#/components/schemas/Node"
+              }
+            }
+          }
+        },
+        "MaterializedTables": {
+          "title": "MaterializedTables",
+          "required": [
+            "id",
+            "created_at",
+            "catalog",
+            "schema_",
+            "table"
+          ],
+          "type": "object",
+          "properties": {
+            "id": {
+              "title": "Id",
+              "type": "string"
+            },
+            "created_at": {
+              "title": "Created At",
+              "type": "integer"
+            },
+            "catalog": {
+              "title": "Catalog",
+              "type": "string"
+            },
+            "schema_": {
+              "title": "Schema ",
+              "type": "string"
+            },
+            "table": {
+              "title": "Table",
+              "type": "string"
+            }
+          }
+        },
+        "Node": {
+          "title": "Node",
+          "required": [
+            "name",
+            "version",
+            "maxage"
+          ],
+          "type": "object",
+          "properties": {
+            "name": {
+              "title": "Name",
+              "type": "string"
+            },
+            "version": {
+              "title": "Version",
+              "type": "integer"
+            },
+            "maxage": {
+              "title": "Maxage",
+              "type": "integer"
+            }
+          }
+        },
+        "ValidationError": {
+          "title": "ValidationError",
+          "required": [
+            "loc",
+            "msg",
+            "type"
+          ],
+          "type": "object",
+          "properties": {
+            "loc": {
+              "title": "Location",
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "msg": {
+              "title": "Message",
+              "type": "string"
+            },
+            "type": {
+              "title": "Error Type",
+              "type": "string"
+            }
+          }
+        }
+      }
+    }
+  }

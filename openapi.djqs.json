@@ -1,0 +1,332 @@
+{
+    "openapi": "3.0.2",
+    "info": {
+      "title": "FastAPI",
+      "version": "0.1.0"
+    },
+    "paths": {
+      "/queries/{query_id}/": {
+        "get": {
+          "summary": "Read Query",
+          "operationId": "read_query_queries__query_id___get",
+          "parameters": [
+            {
+              "required": true,
+              "schema": {
+                "title": "Query Id",
+                "type": "string"
+              },
+              "name": "query_id",
+              "in": "path"
+            },
+            {
+              "required": false,
+              "schema": {
+                "title": "Limit",
+                "type": "integer",
+                "default": 0
+              },
+              "name": "limit",
+              "in": "query"
+            },
+            {
+              "required": false,
+              "schema": {
+                "title": "Offset",
+                "type": "integer",
+                "default": 0
+              },
+              "name": "offset",
+              "in": "query"
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Successful Response",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/QueryWithResults"
+                  }
+                }
+              }
+            },
+            "422": {
+              "description": "Validation Error",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/HTTPValidationError"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "/queries/": {
+        "post": {
+          "summary": "Submit Query",
+          "operationId": "submit_query_queries__post",
+          "requestBody": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/QueryCreate"
+                }
+              }
+            },
+            "required": true
+          },
+          "responses": {
+            "200": {
+              "description": "Successful Response",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/QueryWithResults"
+                  }
+                }
+              }
+            },
+            "422": {
+              "description": "Validation Error",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/HTTPValidationError"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "components": {
+      "schemas": {
+        "ColumnMetadata": {
+          "title": "ColumnMetadata",
+          "required": [
+            "name",
+            "type"
+          ],
+          "type": "object",
+          "properties": {
+            "name": {
+              "title": "Name",
+              "type": "string"
+            },
+            "type": {
+              "$ref": "#/components/schemas/ColumnType"
+            }
+          }
+        },
+        "ColumnType": {
+          "title": "ColumnType",
+          "enum": [
+            "BYTES",
+            "STR",
+            "FLOAT",
+            "INT",
+            "DECIMAL",
+            "BOOL",
+            "DATETIME",
+            "DATE",
+            "TIME",
+            "TIMEDELTA",
+            "LIST",
+            "DICT"
+          ],
+          "type": "string",
+          "description": "An enumeration."
+        },
+        "HTTPValidationError": {
+          "title": "HTTPValidationError",
+          "type": "object",
+          "properties": {
+            "detail": {
+              "title": "Detail",
+              "type": "array",
+              "items": {
+                "$ref": "#/components/schemas/ValidationError"
+              }
+            }
+          }
+        },
+        "QueryCreate": {
+          "title": "QueryCreate",
+          "required": [
+            "engine",
+            "submitted_query"
+          ],
+          "type": "object",
+          "properties": {
+            "engine": {
+              "title": "Engine",
+              "type": "string"
+            },
+            "submitted_query": {
+              "title": "Submitted Query",
+              "type": "string"
+            }
+          }
+        },
+        "QueryResults": {
+          "title": "QueryResults",
+          "type": "array",
+          "items": {
+            "$ref": "#/components/schemas/StatementResults"
+          }
+        },
+        "QueryState": {
+          "title": "QueryState",
+          "enum": [
+            "UNKNOWN",
+            "ACCEPTED",
+            "SCHEDULED",
+            "RUNNING",
+            "FINISHED",
+            "CANCELED",
+            "FAILED"
+          ],
+          "type": "string",
+          "description": "An enumeration."
+        },
+        "QueryWithResults": {
+          "title": "QueryWithResults",
+          "required": [
+            "id",
+            "submitted_query",
+            "results",
+            "errors"
+          ],
+          "type": "object",
+          "properties": {
+            "id": {
+              "title": "Id",
+              "type": "string"
+            },
+            "submitted_query": {
+              "title": "Submitted Query",
+              "type": "string"
+            },
+            "executed_query": {
+              "title": "Executed Query",
+              "type": "string"
+            },
+            "scheduled": {
+              "title": "Scheduled",
+              "type": "integer"
+            },
+            "started": {
+              "title": "Started",
+              "type": "integer"
+            },
+            "finished": {
+              "title": "Finished",
+              "type": "integer"
+            },
+            "state": {
+              "allOf": [
+                {
+                  "$ref": "#/components/schemas/QueryState"
+                }
+              ],
+              "default": "UNKNOWN"
+            },
+            "progress": {
+              "title": "Progress",
+              "type": "number",
+              "default": 0
+            },
+            "results": {
+              "$ref": "#/components/schemas/QueryResults"
+            },
+            "next": {
+              "title": "Next",
+              "maxLength": 65536,
+              "minLength": 1,
+              "type": "string",
+              "format": "uri"
+            },
+            "previous": {
+              "title": "Previous",
+              "maxLength": 65536,
+              "minLength": 1,
+              "type": "string",
+              "format": "uri"
+            },
+            "errors": {
+              "title": "Errors",
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "StatementResults": {
+          "title": "StatementResults",
+          "required": [
+            "sql",
+            "columns",
+            "rows"
+          ],
+          "type": "object",
+          "properties": {
+            "sql": {
+              "title": "Sql",
+              "type": "string"
+            },
+            "columns": {
+              "title": "Columns",
+              "type": "array",
+              "items": {
+                "$ref": "#/components/schemas/ColumnMetadata"
+              }
+            },
+            "rows": {
+              "title": "Rows",
+              "type": "array",
+              "items": {
+                "type": "array",
+                "items": {}
+              }
+            },
+            "row_count": {
+              "title": "Row Count",
+              "type": "integer",
+              "default": 0
+            }
+          }
+        },
+        "ValidationError": {
+          "title": "ValidationError",
+          "required": [
+            "loc",
+            "msg",
+            "type"
+          ],
+          "type": "object",
+          "properties": {
+            "loc": {
+              "title": "Location",
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "msg": {
+              "title": "Message",
+              "type": "string"
+            },
+            "type": {
+              "title": "Error Type",
+              "type": "string"
+            }
+          }
+        }
+      }
+    }
+  }
